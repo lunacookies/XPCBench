@@ -20,7 +20,7 @@ int main(void) {
 	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
 		(void)event;
 	});
-	xpc_connection_resume(connection);
+	xpc_connection_activate(connection);
 
 	// For some reason the first send & receive takes much longer, so we
 	// pull it out of the timing loop. Maybe connection creation is lazy?

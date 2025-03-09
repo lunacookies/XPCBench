@@ -8,7 +8,7 @@ static void connectionHandler(xpc_connection_t connection) {
 			xpc_connection_send_message(connection, reply);
 		}
 	});
-	xpc_connection_resume(connection);
+	xpc_connection_activate(connection);
 }
 
 int main(void) {
