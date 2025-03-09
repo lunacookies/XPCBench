@@ -1,0 +1,6 @@
+{
+	"CFBundleInfoDictionaryVersion": "6.0",
+	"CFBundleIdentifier": "org.xoria.XPCBench.Service",
+	"CFBundlePackageType": "XPC!",
+	"XPCService": {}
+}

@@ -1,0 +1,15 @@
+{
+	"CFBundleInfoDictionaryVersion": "6.0",
+	"CFBundleIdentifier": "org.xoria.XPCBench",
+	"CFBundlePackageType": "APPL",
+	"CFBundleExecutable": "XPCBench",
+
+	"CFBundleName": "XPCBench",
+	"CFBundleDisplayName": "XPCBench",
+
+	"CFBundleShortVersionString": "1.0.0",
+	"CFBundleVersion": "1.0.0",
+	"NSHumanReadableCopyright": "Copyright © 2025 Luna Razzaghipour",
+
+	"LSUIElement": true
+}

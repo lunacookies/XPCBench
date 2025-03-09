@@ -1,0 +1,71 @@
+#!/bin/dash
+
+set -e
+
+buildDirectory="Build"
+appBundleName="XPCBench"
+appBundlePath="$buildDirectory/$appBundleName.app"
+serviceBundleIdentifier="org.xoria.XPCBench.Service"
+servicePath="$appBundlePath/Contents/XPCServices/$serviceBundleIdentifier.xpc"
+
+clang-format -i Source/*.m
+
+rm -rf "$buildDirectory"
+mkdir -p "$appBundlePath/Contents/MacOS"
+mkdir -p "$servicePath"
+
+plutil \
+	-convert binary1 \
+	-o "$appBundlePath/Contents/Info.plist" \
+	"Data/Info.json"
+
+plutil \
+	-convert binary1 \
+	-o "$servicePath/Info.plist" \
+	"Data/ServiceInfo.json"
+
+set -- \
+	-fmodules -fobjc-arc \
+	-Wall \
+	-Wextra \
+	-Wpedantic \
+	-Wconversion \
+	-Wimplicit-atomic-properties \
+	-Wimplicit-fallthrough \
+	-Wmissing-prototypes \
+	-Wshadow \
+	-Wstrict-prototypes \
+	-Wundeclared-selector \
+	-g -Os -fwrapv -ftrivial-auto-var-init=zero -fno-strict-aliasing
+
+clang "$@" \
+	-o "$appBundlePath/Contents/MacOS/$appBundleName" \
+	"Source/EntryPoint.m"
+
+clang "$@" \
+	-o "$servicePath/$serviceBundleIdentifier" \
+	"Source/ServiceEntryPoint.m"
+
+temporaryEntitlementsPath="$buildDirectory/$appBundleName.entitlements"
+plutil \
+	-convert xml1 \
+	-o "$temporaryEntitlementsPath" \
+	"Data/Entitlements.json"
+
+plutil \
+	-insert "com\.apple\.security\.get-task-allow" -bool YES \
+	"$temporaryEntitlementsPath"
+
+codesign \
+	--sign - \
+	--entitlements "$temporaryEntitlementsPath" \
+	--options runtime \
+	"$appBundlePath/Contents/MacOS/$appBundleName"
+
+codesign \
+	--sign - \
+	--entitlements "$temporaryEntitlementsPath" \
+	--options runtime \
+	"$servicePath/$serviceBundleIdentifier"
+
+rm "$temporaryEntitlementsPath"
